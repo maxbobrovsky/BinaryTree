@@ -1,0 +1,13 @@
+C:\Users\Admin\source\repos\TreeApp\TreeApp\bin\Debug\netcoreapp3.1\TreeApp.exe
+C:\Users\Admin\source\repos\TreeApp\TreeApp\bin\Debug\netcoreapp3.1\TreeApp.deps.json
+C:\Users\Admin\source\repos\TreeApp\TreeApp\bin\Debug\netcoreapp3.1\TreeApp.runtimeconfig.json
+C:\Users\Admin\source\repos\TreeApp\TreeApp\bin\Debug\netcoreapp3.1\TreeApp.runtimeconfig.dev.json
+C:\Users\Admin\source\repos\TreeApp\TreeApp\bin\Debug\netcoreapp3.1\TreeApp.dll
+C:\Users\Admin\source\repos\TreeApp\TreeApp\bin\Debug\netcoreapp3.1\TreeApp.pdb
+C:\Users\Admin\source\repos\TreeApp\TreeApp\obj\Debug\netcoreapp3.1\TreeApp.csprojAssemblyReference.cache
+C:\Users\Admin\source\repos\TreeApp\TreeApp\obj\Debug\netcoreapp3.1\TreeApp.AssemblyInfoInputs.cache
+C:\Users\Admin\source\repos\TreeApp\TreeApp\obj\Debug\netcoreapp3.1\TreeApp.AssemblyInfo.cs
+C:\Users\Admin\source\repos\TreeApp\TreeApp\obj\Debug\netcoreapp3.1\TreeApp.csproj.CoreCompileInputs.cache
+C:\Users\Admin\source\repos\TreeApp\TreeApp\obj\Debug\netcoreapp3.1\TreeApp.dll
+C:\Users\Admin\source\repos\TreeApp\TreeApp\obj\Debug\netcoreapp3.1\TreeApp.pdb
+C:\Users\Admin\source\repos\TreeApp\TreeApp\obj\Debug\netcoreapp3.1\TreeApp.genruntimeconfig.cache
