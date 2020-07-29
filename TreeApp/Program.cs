@@ -19,9 +19,9 @@ namespace TreeApp
 
     public interface IBinaryTreeNode<T> where T : IComparable
     {
-        void Add(T value);
+        void Add2(T value);
         bool Contains(T value);
-        void Remove(T value);
+        INode<T> Remove(INode<T> tree, T value);
         void Clear();
         int Count { get; }
     }
@@ -52,6 +52,12 @@ namespace TreeApp
 
         public int Count { get { return _count; } }
 
+        public INode<T> GetHead()
+        {
+            if (_head == null) return null;
+            return _head;
+        }
+
         public INode<T> tryFindNodeParent(INode<T> node, T value)
         {
             if (node.Value.CompareTo(value) < 0)
@@ -60,7 +66,6 @@ namespace TreeApp
                 {
                     return node;
                 }
-
                 return tryFindNodeParent(node.Right, value);
             }
             else if (node.Value.CompareTo(value) > 0)
@@ -74,48 +79,6 @@ namespace TreeApp
             }
             else return null;
         }
-
-        public void Add3(T value)
-        {
-            var node = new Node<T>(value);
-
-            if (_head == null)
-            {
-                _head = node;
-
-            }
-            else
-            {
-                INode<T> currentNode = _head;
-
-                while (currentNode != null)
-                {
-                    if (currentNode.Value.CompareTo(value) == 0) return;
-
-                    if (currentNode.Value.CompareTo(value) < 0)
-                    {
-                        if (currentNode.Right == null)
-                        {
-                            currentNode.Right = node;
-                            break;
-                        }
-                        currentNode = currentNode.Right;
-                    }
-
-                    else
-                    {
-                        if (currentNode.Left == null)
-                        {
-                            currentNode.Left = node;
-                            break;
-                        }
-                        currentNode = currentNode.Left;
-                    }
-
-                }
-            }
-            _count++;
-        }
         public void Add2(T value)
         {
             var node = new Node<T>(value);
@@ -124,9 +87,7 @@ namespace TreeApp
             {
                 _head = node;
 
-            }
-
-            else
+            } else
             {
                 var parentNode = tryFindNodeParent(_head, value);
 
@@ -136,55 +97,16 @@ namespace TreeApp
                     {
                         parentNode.Right = node;
                         _count++;
-                    } else
+                    }
+                    else
                     {
                         parentNode.Left = node;
                         _count++;
                     }
                 }
             }
-
         }
-        public void Add(T value)
-        {
-            Node<T> node = new Node<T>(value);
-            INode<T> current = null;
-
-            if (_head == null)
-            {
-                _head = node;                
-                current = _head;
-            } else
-            {
-                if (current.Value.CompareTo(value) < 0)
-                {
-                    if (current.Right == null)
-                    { current.Right = node; current = _head; }
-
-                    else
-                    {
-                        current = current.Right;
-                        Add(value);
-                    }
-                }
-
-                else if (current.Value.CompareTo(value) > 0)
-                {
-                    if (current.Left == null)
-                    { current.Left = node; current = _head; }
-
-                    else
-                    {
-                        current = current.Left;
-                        Add(value);
-                    }
-                }
-
-                else return;
-            }
-            _count++;
-        }
-
+        
         public void Clear()
         {
             _head = null;
@@ -196,16 +118,16 @@ namespace TreeApp
             INode<T> current = _head;
             while (current != null)
             {
-                if (current.Value.CompareTo(value) == 0) 
-                { 
-                    return true; 
+                if (current.Value.CompareTo(value) == 0)
+                {
+                    return true;
                 }
 
                 current = current.Value.CompareTo(value) < 0
                         ? current.Right
                         : current.Left;
 
-            }      
+            }
             return false;
         }
 
@@ -215,7 +137,7 @@ namespace TreeApp
             if (tree == null)
             {
                 return null;
-            }           
+            }
 
             if (tree.Left == null)
             {
@@ -225,206 +147,41 @@ namespace TreeApp
             return findMinimumNode(tree.Left);
         }
 
-        private INode<T> findMinimumLeftNodeParent(INode<T> tree)
+        public INode<T> Remove(INode<T> tree, T value)
         {
-            if (tree == null)
-            {
-                return null;
-            }
 
-            if (tree.Left != null && tree.Left.Left == null)
+            if(tree == null)
             {
                 return tree;
             }
 
-            return findMinimumLeftNodeParent(tree.Left);
-        }
-
-        private INode<T> findMaximumRightNodeParent(INode<T> tree)
-        {
-            if (tree == null)
+            if((value.CompareTo(tree.Value)) < 0)
             {
-                return null;
-            }
-
-            if (tree.Right != null && tree.Right.Right == null)
+                tree.Left = Remove(tree.Left, value);
+            } else
+            if ((value.CompareTo(tree.Value)) > 0)
             {
-                return tree;
-            }
-
-            return findMaximumRightNodeParent(tree.Right);
-        }
-
-        public void Remove(T value)
-        {
-            INode<T> parent = null;
-            INode<T> current = _head;
-
-            while (current != null)
+                tree.Right = Remove(tree.Right, value);
+            } else
+            if (tree.Left != null && tree.Right != null)
             {
-                if(current.Value.CompareTo(value) == 0)
+                tree.Value = findMinimumNode(tree.Right).Value;
+                tree.Right = Remove(tree.Right, tree.Value);
+            } else
+            {
+                if (tree.Left != null)
                 {
-                    break;
-                }
-
-                if (current.Value.CompareTo(value) < 0)
-                {
-                    parent = current;
-                    current = current.Right;
+                    tree = tree.Left;
                 } else 
+                if (tree.Right != null)
                 {
-                    parent = current;
-                    current = current.Left;
-                }               
-            }
-
-            if (current == null)
-            {
-                Console.WriteLine("There is no such an element in the tree!!!");
-                return;
-            }
-
-            if (current.Left == null && current.Right == null)
-            {
-                if(parent == null)
-                {
-                    _head = null;
-                } else
-                if (parent.Value.CompareTo(current.Value) < 0)
-                {
-                    parent.Right = null;
-                } else 
-                {
-                    parent.Left = null;
-                } 
-               
-            } else if (current.Left == null && current.Right != null)
-            {
-                if (parent == null)
-                {
-
-
-                    var minimumNodeParent = findMinimumLeftNodeParent(current.Right);
-                    if (minimumNodeParent != null)
-                    {
-                        var minimumLeftNode = minimumNodeParent.Left;
-                        minimumNodeParent.Left = null;
-                        current.Value = minimumLeftNode.Value;
-
-                    }
-                } else if (parent.Value.CompareTo(current.Value) < 0)
-                {
-                    var minimumNodeParent = findMinimumLeftNodeParent(current.Right);
-                    if (minimumNodeParent != null)
-                    { 
-                        var minimumLeftNode = minimumNodeParent.Left;
-                        minimumNodeParent.Left = null;
-                        parent.Right = minimumLeftNode;
-                    }
-                    else
-                    {
-                        parent.Right = current.Right;
-                    }
+                    tree = tree.Right;
                 } else
                 {
-                    var minimumNodeParent = findMinimumLeftNodeParent(current.Right);
-                    if (minimumNodeParent != null)
-                    {
-                        var minimumLeftNode = minimumNodeParent.Left;
-                        minimumNodeParent.Left = null;
-                        parent.Left = minimumLeftNode;
-                    }
-                    else
-                    {
-                        parent.Left = current.Right;
-                    }
-                }
-            } else if (current.Left != null && current.Right == null)
-            {
-                if (parent == null)
-                {
-
-
-                    var maximumNodeParent = findMaximumRightNodeParent(current.Left);
-                    if (maximumNodeParent != null)
-                    {
-                        var minimumLeftNode = maximumNodeParent.Right;
-                        maximumNodeParent.Right = null;
-                        current.Value = minimumLeftNode.Value;
-
-                    }
-                } else if (parent.Value.CompareTo(current.Value) < 0)
-                {
-                    var maximumNodeParent = findMaximumRightNodeParent(current.Left);
-                    if (maximumNodeParent != null)
-                    {
-                        var maximumRightNode = maximumNodeParent.Right;
-                        maximumRightNode.Right = null;
-                        parent.Right = maximumRightNode;
-                    }
-                    else
-                    {
-                        parent.Right = current.Right;
-                    }
-                }
-                else
-                {
-                    var maximumNodeParent = findMaximumRightNodeParent(current.Left);
-                    if (maximumNodeParent != null)
-                    {
-                        var maximumRightNode = maximumNodeParent.Right;
-                        maximumNodeParent.Right = null;
-                        parent.Left = maximumRightNode;
-                    }
-                    else
-                    {
-                        parent.Left = current.Right;
-                    }
-                }
-            } else if(current.Left != null && current.Right != null)
-            {
-                if(parent == null) 
-                {
-                   
-                    
-                    var minimumNodeParent = findMinimumLeftNodeParent(current.Right);
-                    if (minimumNodeParent != null)
-                    {
-                        var minimumLeftNode = minimumNodeParent.Left;
-                        minimumNodeParent.Left = null;
-                        current.Value = minimumLeftNode.Value;
-
-                    } 
-                } else if (parent.Value.CompareTo(current.Value) < 0)
-                {
-                    var minimumNodeParent = findMinimumLeftNodeParent(current.Right);
-                    if (minimumNodeParent != null)
-                    {
-                        var minimumLeftNode = minimumNodeParent.Left;
-                        minimumNodeParent.Left = null;
-                        parent.Right = minimumLeftNode;
-                    }
-                    else
-                    {
-                        parent.Right = current.Right;
-                    }
-                }
-                else
-                {
-                    var minimumNodeParent = findMinimumLeftNodeParent(current.Right);
-                    if (minimumNodeParent != null)
-                    {
-                        var minimumLeftNode = minimumNodeParent.Left;
-                        minimumNodeParent.Left = null;
-                        parent.Left = minimumLeftNode;
-                    }
-                    else
-                    {
-                        parent.Left = current.Right;
-                    }
+                    tree = null;
                 }
             }
-            _count--;
+            return tree;
         }
     }
 
@@ -441,14 +198,14 @@ namespace TreeApp
             tree.Add2(1);
             //tree.Add2(2);
 
-            tree.Remove(8);
-            tree.Remove(6);
+            
 
-
-            Console.WriteLine(tree.Contains(10));
+            tree.Remove(tree.GetHead(), 6);
+            
+            Console.WriteLine(tree.Contains(5));
             Console.WriteLine(tree.Contains(1));
 
-            tree.Remove(4);
+            
 
             tree.Clear();
 
