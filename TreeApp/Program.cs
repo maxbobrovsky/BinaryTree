@@ -65,7 +65,6 @@ namespace TreeApp
         void Add2(T value);
         bool Contains(T value);
         INode<T> Remove(T value);
-        INode<T> Remove(INode<T> tree, T value);
         void Clear();
         int Count { get; }
     }
@@ -198,7 +197,7 @@ namespace TreeApp
             return Remove(_head, value);
         }
 
-        public INode<T> Remove(INode<T> tree, T value)
+        protected INode<T> Remove(INode<T> tree, T value)
         {
 
                 if (tree == null)
