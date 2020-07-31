@@ -177,7 +177,7 @@ namespace TreeApp
         }
 
 
-        private INode<T> findMinimumNode(INode<T> tree)
+        private INode<T> findMinimumNodeFromSubtree(INode<T> tree)
         {
             if (tree == null)
             {
@@ -189,44 +189,55 @@ namespace TreeApp
                 return tree;
             }
 
-            return findMinimumNode(tree.Left);
+            return findMinimumNodeFromSubtree(tree.Left);
         }
 
         public INode<T> Remove(INode<T> tree, T value)
         {
-
-            if(tree == null)
+            if (tree.Equals(this.GetHead()))
             {
+
+                if (tree == null)
+                {
+                    return tree;
+                }
+
+                if ((value.CompareTo(tree.Value)) < 0)
+                {
+                    tree.Left = Remove(tree.Left, value);
+                }
+                else
+                if ((value.CompareTo(tree.Value)) > 0)
+                {
+                    tree.Right = Remove(tree.Right, value);
+                }
+                else
+                if (tree.Left != null && tree.Right != null)
+                {
+                    tree.Value = findMinimumNodeFromSubtree(tree.Right).Value;
+                    tree.Right = Remove(tree.Right, tree.Value);
+                }
+                else
+                {
+                    if (tree.Left != null)
+                    {
+                        tree = tree.Left;
+                    }
+                    else
+                    if (tree.Right != null)
+                    {
+                        tree = tree.Right;
+                    }
+                    else
+                    {
+                        tree = null;
+                    }
+                }
                 return tree;
             }
 
-            if((value.CompareTo(tree.Value)) < 0)
-            {
-                tree.Left = Remove(tree.Left, value);
-            } else
-            if ((value.CompareTo(tree.Value)) > 0)
-            {
-                tree.Right = Remove(tree.Right, value);
-            } else
-            if (tree.Left != null && tree.Right != null)
-            {
-                tree.Value = findMinimumNode(tree.Right).Value;
-                tree.Right = Remove(tree.Right, tree.Value);
-            } else
-            {
-                if (tree.Left != null)
-                {
-                    tree = tree.Left;
-                } else 
-                if (tree.Right != null)
-                {
-                    tree = tree.Right;
-                } else
-                {
-                    tree = null;
-                }
-            }
-            return tree;
+            else throw new Exception("You are trying to use this function to the other tree");
+            
         }
     }
 
@@ -244,13 +255,25 @@ namespace TreeApp
             tree.Add2(1);
             //tree.Add2(2);
 
+            BinaryTreeNode<int> tree2 = new BinaryTreeNode<int>();
+            tree2.Add2(9);
+
+            try
+            {
+                tree.Remove(tree2.GetHead(), 6);
+            }
+
+            catch(Exception e)
+            {
+                Console.WriteLine("   Message:\n{0}", e.Message);
+            }
+
             //trvl.Print(tree.GetHead(), tree);
 
             List<ITreeTravelsar<int>> list = new List<TreeApp.ITreeTravelsar<int>>() {new InOrder<int>(), new PreOrder<int>(), new PostOrder<int>()};
             foreach(var pth in list)
             {
                 pth.Print(tree.GetHead(), tree);
-                Console.WriteLine();
             }
             Console.WriteLine(tree.Contains(5));
             Console.WriteLine(tree.Contains(1));
