@@ -64,6 +64,7 @@ namespace TreeApp
     {
         void Add2(T value);
         bool Contains(T value);
+        INode<T> Remove(T value);
         INode<T> Remove(INode<T> tree, T value);
         void Clear();
         int Count { get; }
@@ -192,10 +193,13 @@ namespace TreeApp
             return findMinimumNodeFromSubtree(tree.Left);
         }
 
+        public INode<T> Remove(T value) 
+        {
+            return Remove(_head, value);
+        }
+
         public INode<T> Remove(INode<T> tree, T value)
         {
-            if (tree.Equals(this.GetHead()))
-            {
 
                 if (tree == null)
                 {
@@ -233,10 +237,7 @@ namespace TreeApp
                         tree = null;
                     }
                 }
-                return tree;
-            }
-
-            else throw new Exception("You are trying to use this function to the other tree");
+                return tree;           
             
         }
     }
@@ -258,15 +259,7 @@ namespace TreeApp
             BinaryTreeNode<int> tree2 = new BinaryTreeNode<int>();
             tree2.Add2(9);
 
-            try
-            {
-                tree.Remove(tree2.GetHead(), 6);
-            }
-
-            catch(Exception e)
-            {
-                Console.WriteLine("   Message:\n{0}", e.Message);
-            }
+            tree.Remove(6);
 
             //trvl.Print(tree.GetHead(), tree);
 
