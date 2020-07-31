@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 
 namespace TreeApp
 {
-
 
     public interface INode<T> : IComparable where T : IComparable
     {
@@ -14,7 +14,50 @@ namespace TreeApp
 
         T Value { get; set; }
     }
-    
+
+    public interface ITreeTravelsar<T> where T : IComparable
+    {
+        void Print(INode<T> node, IBinaryTreeNode<T> tree);
+    }
+
+    internal class InOrder<T> : ITreeTravelsar<T> where T : IComparable
+    {
+        public void Print(INode<T> node, IBinaryTreeNode<T> tree)
+        {
+            if(node != null)
+            {
+                Print(node.Left, tree);
+                Console.Write(node.Value + " ");
+                Print(node.Right, tree);
+            }
+        }
+    }
+
+    internal class PreOrder<T> : ITreeTravelsar<T> where T : IComparable
+    {
+        public void Print(INode<T> node, IBinaryTreeNode<T> tree)
+        {
+            if (node != null)
+            {
+                Console.Write(node.Value + " ");
+                Print(node.Left, tree);
+                Print(node.Right, tree);
+            }
+        }
+    }
+
+    internal class PostOrder<T> : ITreeTravelsar<T> where T : IComparable
+    {
+        public void Print(INode<T> node, IBinaryTreeNode<T> tree)
+        {
+            if (node != null)
+            {
+                Print(node.Left, tree);
+                Print(node.Right, tree);
+                Console.Write(node.Value + " ");
+            }
+        }
+    }
 
 
     public interface IBinaryTreeNode<T> where T : IComparable
@@ -79,6 +122,7 @@ namespace TreeApp
             }
             else return null;
         }
+
         public void Add2(T value)
         {
             var node = new Node<T>(value);
@@ -86,6 +130,7 @@ namespace TreeApp
             if (_head == null)
             {
                 _head = node;
+                _count++;
 
             } else
             {
@@ -190,6 +235,7 @@ namespace TreeApp
         static void Main(string[] args)
         {
             BinaryTreeNode<int> tree = new BinaryTreeNode<int>();
+            //InOrder<int> trvl = new InOrder<int>();
             tree.Add2(6);
             tree.Add2(8);
             tree.Add2(4);
@@ -198,10 +244,14 @@ namespace TreeApp
             tree.Add2(1);
             //tree.Add2(2);
 
-            
+            //trvl.Print(tree.GetHead(), tree);
 
-            tree.Remove(tree.GetHead(), 6);
-            
+            List<ITreeTravelsar<int>> list = new List<TreeApp.ITreeTravelsar<int>>() {new InOrder<int>(), new PreOrder<int>(), new PostOrder<int>()};
+            foreach(var pth in list)
+            {
+                pth.Print(tree.GetHead(), tree);
+                Console.WriteLine();
+            }
             Console.WriteLine(tree.Contains(5));
             Console.WriteLine(tree.Contains(1));
 
